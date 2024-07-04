@@ -1,0 +1,12 @@
+{
+  "name": "image-gallery",
+  "version": "1.0.0",
+  "description": "A simple image gallery web application",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
