@@ -58,6 +58,9 @@ pipeline {
                         if (docker images -f "dangling=true" -q) {
                             docker image prune -f
                         }
-                    '''        
+                    ''' 
+                }                
+            }
+        }
     }
 }
