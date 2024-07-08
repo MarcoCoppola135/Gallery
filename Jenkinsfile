@@ -45,20 +45,4 @@ pipeline {
             }
         }
     }
-
-    post {
-        always {
-            echo 'Cleaning up...'
-            script {
-                powershell '''
-                    if (docker ps -q --filter "name=myapp_container") {
-                        docker stop myapp_container
-                    }
-                    if (docker ps -aq --filter "name=myapp_container") {
-                        docker rm myapp_container
-                    }
-                '''
-            }
-        }
-    }
 }
