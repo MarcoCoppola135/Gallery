@@ -25,7 +25,7 @@ pipeline {
             steps {
                 script {
                     powershell '''
-                        if (docker ps -aq --filter "name=myapp") {
+                        if (docker images -q myapp) {
                             docker rm myapp
                         }
                         docker build -t myapp:latest .
