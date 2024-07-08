@@ -7,6 +7,17 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/MarcoCoppola135/Gallery.git'
             }
         }
+
+        stage('Check Python and Pip Installation') {
+            steps {
+                script {
+                    powershell '''
+                        python --version
+                        pip --version
+                    '''
+                }
+            }
+        }
         
         stage('Install dependencies') {
             steps {
