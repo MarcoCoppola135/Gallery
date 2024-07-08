@@ -66,7 +66,7 @@ pipeline {
             script {
                 // Clean up Docker images to free space
                 powershell '''
-                docker rmi $env.DOCKER_IMAGE
+                docker rmi $env.DOCKER_IMAGE || Write-Host "Failed to remove image"
                 '''
             }
         }
