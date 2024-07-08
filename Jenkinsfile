@@ -39,7 +39,7 @@ pipeline {
                         if (docker ps -aq --filter "name=myapp_container") {
                             docker rm myapp_container
                         }
-                        docker run -d -p 5000:5000 --name myapp_container myapp:latest
+                        docker run -d -p 3000:3000 --name myapp_container myapp:latest
                     '''
                 }
             }
