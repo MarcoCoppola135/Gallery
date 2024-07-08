@@ -28,7 +28,7 @@ pipeline {
                         if (docker ps -aq --filter "name=myapp") {
                             docker rm myapp
                         }
-                    'docker build -t myapp:latest .'
+                        docker build -t myapp:latest .
                     '''
                     
                 }
