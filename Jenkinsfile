@@ -1,60 +1,42 @@
 pipeline {
     agent any
 
-    environment {
-        DOCKER_IMAGE = 'my-jenkins'
-        CONTAINER_NAME = 'jenkins'
-    }
-
     stages {
-        stage('Build Docker Image') {
+        stage('Clone repository') {
+            steps {
+                git branch: 'main', url: 'https://github.com/leouchihaa/lib.git'
+            }
+        }
+        
+        stage('Install dependencies') {
             steps {
                 script {
-                    // Build the Docker image
                     powershell '''
-                    docker build -t $env.DOCKER_IMAGE .
+                        pip install -r requirements.txt
                     '''
                 }
             }
         }
 
-        stage('Run Jenkins Container') {
+        stage('Build Docker image') {
             steps {
                 script {
-                    // Stop and remove the container if it already exists
-                    powershell '''
-                    if (docker ps -a -q -f name=$env.CONTAINER_NAME) {
-                        docker stop $env.CONTAINER_NAME
-                        docker rm $env.CONTAINER_NAME
-                    }
-                    # Run the Jenkins container
-                    docker run -d -p 8080:8080 -p 50000:50000 --name $env.CONTAINER_NAME $env.DOCKER_IMAGE
-                    '''
+                    powershell 'docker build -t myapp:latest .'
                 }
             }
         }
 
-        stage('Setup Jenkins') {
+        stage('Run Docker container') {
             steps {
                 script {
-                    // Wait for Jenkins to start up
-                    powershell 'Start-Sleep -Seconds 30'
-
-                    // Print the initial admin password
                     powershell '''
-                    docker exec $env.CONTAINER_NAME powershell -command "Get-Content -Path 'C:\\ProgramData\\Jenkins\\.jenkins\\secrets\\initialAdminPassword'"
-                    '''
-                }
-            }
-        }
-
-        stage('Clean Up') {
-            steps {
-                script {
-                    // Stop and remove the Jenkins container after the pipeline is done
-                    powershell '''
-                    docker stop $env.CONTAINER_NAME
-                    docker rm $env.CONTAINER_NAME
+                        if (docker ps -q --filter "name=myapp_container") {
+                            docker stop myapp_container
+                        }
+                        if (docker ps -aq --filter "name=myapp_container") {
+                            docker rm myapp_container
+                        }
+                        docker run -d -p 5000:5000 --name myapp_container myapp:latest
                     '''
                 }
             }
@@ -63,10 +45,15 @@ pipeline {
 
     post {
         always {
+            echo 'Cleaning up...'
             script {
-                // Clean up Docker images to free space
                 powershell '''
-                docker rmi $env.DOCKER_IMAGE || Write-Host "Failed to remove image"
+                    if (docker ps -q --filter "name=myapp_container") {
+                        docker stop myapp_container
+                    }
+                    if (docker ps -aq --filter "name=myapp_container") {
+                        docker rm myapp_container
+                    }
                 '''
             }
         }
