@@ -50,5 +50,14 @@ pipeline {
                 }
             }
         }
+        
+        stage('Remove Docker images') {
+            steps {
+                script {
+                    powershell '''
+                        if (docker images -f "dangling=true" -q) {
+                            docker image prune -f
+                        }
+                    '''        
     }
 }
