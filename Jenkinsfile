@@ -24,7 +24,13 @@ pipeline {
         stage('Build Docker image') {
             steps {
                 script {
-                    powershell 'docker build -t myapp:latest .'
+                    powershell '''
+                        if (docker ps -aq --filter "name=myapp") {
+                            docker rm myapp
+                        }
+                    'docker build -t myapp:latest .'
+                    '''
+                    
                 }
             }
         }
