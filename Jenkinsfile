@@ -4,18 +4,7 @@ pipeline {
     stages {
         stage('Clone repository') {
             steps {
-                git branch: 'main', url: 'https://github.com/MarcoCoppola135/Gallery.git'
-            }
-        }
-
-        stage('Check Python and Pip Installation') {
-            steps {
-                script {
-                    powershell '''
-                        python --version
-                        pip --version
-                    '''
-                }
+                git branch: 'main', url: 'https://github.com/leouchihaa/lib.git'
             }
         }
         
@@ -23,6 +12,9 @@ pipeline {
             steps {
                 script {
                     powershell '''
+                        $env:Path += "C:/Users/leona/AppData/Local/Programs/Python/Python311"
+                        python -m venv venv
+                        .\\venv\\Scripts\\Activate.ps1
                         pip install -r requirements.txt
                     '''
                 }
